@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ChevronsLeft, ChevronsRight } from "react-feather";
-import moneyHeist from '../../assets/moneyHeist.jpg';
-import strangerThings from '../../assets/strangerThings.jpg';
-import kyloRen from '../../assets/kyloRen.jpg';
-import justiceLeague from '../../assets/justiceLeague.jpg';
-import avengers from '../../assets/avengers.jpg'
-
-
+import videoSource from '../../assets/video.mp4'; 
+import videoSource2 from '../../assets/video2.mp4'; 
 const HomeCarousel = () => {
   const [curr, setCurr] = useState(0);
+  const videoRef = useRef(null);
 
-  const autoSlide = true;
-  const autoSlideInterval = 2500;
+  const autoSlide = false;
+  const autoSlideInterval = 5500;
 
   const prev = () =>
     setCurr((curr) => (curr === 0 ? slides.length - 1 : curr - 1));
@@ -19,29 +15,45 @@ const HomeCarousel = () => {
     setCurr((curr) => (curr === slides.length - 1 ? 0 : curr + 1));
 
   const slides = [
-    strangerThings,
-    moneyHeist,
-    kyloRen,
-    justiceLeague,
-    avengers,
+    {type: 'video', source: videoSource2 },
+    // Add more video objects if needed
   ];
 
   useEffect(() => {
     if (!autoSlide) return;
+
     const slideInterval = setInterval(next, autoSlideInterval);
-    return () => clearInterval(slideInterval);
+
+    return () => {
+      clearInterval(slideInterval);
+    };
   }, []);
 
+  useEffect(() => {
+    if (slides[curr].type === 'video') {
+      videoRef.current.play();
+    }
+  }, [curr]);
+
   return (
-    <div
-      className="max-w-fit relative overflow-hidden w-screen h-72"
-    >
+    <div className="max-w-fit relative overflow-hidden w-screen h-7.5">
       <div
         style={{ transform: `translateX(-${curr * 100}%)` }}
         className="flex transition-transform ease-out duration-500"
       >
         {slides.map((slide, index) => (
-          <img key={index} src={slide} alt={`Slide ${index}`} />
+          <div
+            key={index}
+            className={`w-full h-full ${slide.type === 'video' ? 'video-slide' : 'image-slide'}`}
+          >
+            {slide.type === 'video' ? (
+              <video ref={videoRef} autoPlay loop muted className="w-full h-full object-cover">
+                <source src={slide.source} type="video/mp4" />
+              </video>
+            ) : (
+              <img src={slide.source} alt={`Slide ${index}`} />
+            )}
+          </div>
         ))}
       </div>
       <div className="flex items-center justify-between absolute inset-0">

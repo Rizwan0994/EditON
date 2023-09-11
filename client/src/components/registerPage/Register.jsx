@@ -67,8 +67,8 @@ const Register = () => {
             z-0">
     </div>
     <div className="w-full mx-auto px-20 space-y-6">
-      <h1 className=" text-8xl font-normal text-purple-400" id='marginT'>Tuner</h1>
-      <p className="text-white text-4xl" id='margin'>Enjoy Multiple videos</p>
+      <h1 className=" text-8xl font-normal text-purple-400" id='marginT'>EditON</h1>
+      <p className="text-white text-4xl" id='margin'>Join Video Community</p>
       <p className="text-white text-4xl" id='marginp'>at one place</p>
 
       <div className="mt-40 pt-36">
@@ -82,7 +82,7 @@ const Register = () => {
     <form className="bg-gray-800 px-3" onSubmit={handleSubmit}>
       <h1 className="text-white font-bold text-3xl mb-1 text-center">Register</h1>
       <p className="text-lg font-normal text-white mb-4 text-center">Register to continue access pages</p>
-      <div className='w-14 h-14 border-2 ml-24 rounded-full m text-white flex justify-center align-center'><p className='mt-3'>+</p></div>
+      {/* <div className='w-14 h-14 border-2 ml-24 rounded-full m text-white flex justify-center align-center'><p className='mt-3'>+</p></div> */}
       <div className="flex items-center border-b-2 py-2 px-3 mb-2">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />

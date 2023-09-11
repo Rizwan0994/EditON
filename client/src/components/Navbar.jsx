@@ -45,6 +45,12 @@ const Navbar = () => {
           <NavLink to="/" className='text-purple-300 text-3xl font-bold'>
             EditON
           </NavLink>
+          <NavLink to="/creators" className='block px-8 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white'>
+          Creators
+          </NavLink>
+          <NavLink to="/movies" className='block px-2 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white'>
+          Movies
+          </NavLink>
         </div>
       </div>
       <div className="flex">
