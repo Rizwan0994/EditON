@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ChevronsLeft, ChevronsRight } from "react-feather";
-import videoSource from '../../assets/video.mp4'; 
-import videoSource2 from '../../assets/video2.mp4'; 
+import videoSource from "../../assets/video.mp4";
+import videoSource2 from "../../assets/video2.mp4";
+import { Typography, Box, Button } from "@mui/material";
 const HomeCarousel = () => {
   const [curr, setCurr] = useState(0);
   const videoRef = useRef(null);
@@ -15,7 +16,7 @@ const HomeCarousel = () => {
     setCurr((curr) => (curr === slides.length - 1 ? 0 : curr + 1));
 
   const slides = [
-    {type: 'video', source: videoSource2 },
+    { type: "video", source: videoSource2 },
     // Add more video objects if needed
   ];
 
@@ -30,7 +31,7 @@ const HomeCarousel = () => {
   }, []);
 
   useEffect(() => {
-    if (slides[curr].type === 'video') {
+    if (slides[curr].type === "video") {
       videoRef.current.play();
     }
   }, [curr]);
@@ -44,10 +45,18 @@ const HomeCarousel = () => {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`w-full h-full ${slide.type === 'video' ? 'video-slide' : 'image-slide'}`}
+            className={`w-full h-full ${
+              slide.type === "video" ? "video-slide" : "image-slide"
+            }`}
           >
-            {slide.type === 'video' ? (
-              <video ref={videoRef} autoPlay loop muted className="w-full h-full object-cover">
+            {slide.type === "video" ? (
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                className="w-full h-full object-cover"
+              >
                 <source src={slide.source} type="video/mp4" />
               </video>
             ) : (
@@ -63,6 +72,55 @@ const HomeCarousel = () => {
         >
           <ChevronsLeft size={40} color="black" />
         </button>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignSelf: "end",
+            mb: "40px",
+          }}
+        >
+          <Typography
+            sx={{
+              fontFamily: "Noto Sans,sans-serif",
+              fontSize: "34px",
+              color: "#fff",
+              mb: "8px",
+            }}
+          >
+            EditON help you make your perfect video
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "Noto Sans,sans-serif",
+              fontSize: "26px",
+              color: "#fff",
+              mb: "16px",
+              textAlign: "center",
+            }}
+          >
+            Easily collaborate with the best video creators
+          </Typography>
+          <Button
+            variant="contained"
+            sx={{
+              mb: "20px",
+              fontSize: "20px",
+              pl: "0px",
+              pr: "0px",
+              width: "400px",
+              height: "47px",
+              alignSelf: "center",
+              color: "#000",
+              backgroundColor: "#0dcaf0",
+              textTransform: "none",
+              fontFamily: "Noto Sans,sans-serif",
+              fontSize: "20px",
+            }}
+          >
+            Create project
+          </Button>
+        </Box>
         <button
           onClick={next}
           className="opacity-30 hover:opacity-80 bg-white rounded-full"
