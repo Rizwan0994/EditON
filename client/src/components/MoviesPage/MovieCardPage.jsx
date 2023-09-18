@@ -34,7 +34,7 @@ export default function MovieCardPage({ cardDetails }) {
               src="https://d1puzd1182zmjc.cloudfront.net/h/TimonHartman.jpg"
               sx={{ borderRadius: "0px 7px", height: 60, width: 60 }}
             />
-            <Typography>by {cardDetails.name}</Typography>
+            <Typography>by {cardDetails.name} helloy</Typography>
           </Stack>
         </CardContent>
       </CardActionArea>
