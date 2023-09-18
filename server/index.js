@@ -91,6 +91,17 @@ app.get('/verify/:token', async (req, res) => {
   });
   
 
+  //.....get all creators....
+  app.get ('/getCreators', async (req, res) => {
+    try {
+      const creators = await userModel.find({ userType: 'creator' });
+      console.log(creators)
+      res.status(200).json(creators);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
   //..........................UPDATE PROFILE........................
   app.get('/getUserdata/:userId', async (req, res) => {
     try {
