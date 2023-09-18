@@ -96,6 +96,7 @@ const Navbar = () => {
       >Upload</NavLink>
       <p className="block px-3 py-2 rounded-md text-base font-medium text-gray-300">|</p>
       <NavLink to="/" onClick={handleLogout} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white">Sign out</NavLink>
+      <NavLink  to="/editprofile"    className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white">Profile</NavLink>
     </div>
   </div>)}
   </div>

@@ -15,6 +15,23 @@ export const postVideo = async (userId, videoData, onProgress) => {
     }
 }
 
+export const verifyEmail = async () => {
+    // Extract the verification token from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+  
+    if (!token) {
+      throw new Error('Verification token not found in the URL');
+    }
+  
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_NODE_API}verify/${token}`);
+      return response.data;
+    } catch (err) {
+      return err.response.data; // Assuming you want to return the error message from the API
+    }
+  };
+
 export const searchByTitle = async (query) => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_NODE_API}video/search?q=${query}`)

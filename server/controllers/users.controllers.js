@@ -1,10 +1,11 @@
 const userModel = require("../models/user.model")
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken')
-
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const registerController = async (req, res) => {
   try {
-    const { name, email, profession, phone, password, confirmPassword } = req.body;
+    const { name, email,  password, confirmPassword } = req.body;
     if (!name) {
       return res.send({ error: "Name is Required" });
     }
@@ -14,15 +15,15 @@ const registerController = async (req, res) => {
     if (!password) {
       return res.send({ message: "Password is Required" });
     }
-    if (!profession) {
-      return res.send({ message: "Profession  is Required" });
-    }
+    // if (!profession) {
+    //   return res.send({ message: "Profession  is Required" });
+    // }
     if (password.length < 6) {
       return res.send({ message: "Password should have 6 charecters" });
     }
-    if (!phone) {
-      return res.send({ message: "Phone no is Required" });
-    }
+    // if (!phone) {
+    //   return res.send({ message: "Phone no is Required" });
+    // }
     if (!confirmPassword) {
       return res.send({ message: "confirmpassword is Required" });
     }
@@ -40,20 +41,51 @@ const registerController = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const hashedConfirmPassword = await bcrypt.hash(confirmPassword, 10);
 
+    // Generate a verification token
+    const verificationToken = crypto.randomBytes(16).toString('hex');
 
 
     const user = await new userModel({
       name,
       email,
-      profession,
-      phone,
       password: hashedPassword,
       confirmPassword: hashedConfirmPassword,
+      verificationToken,
     }).save();
+
+    const mailOptions = {
+      from: 'fyp2batch19@gmail.com',
+      to: email,
+      subject: 'Email Verification',
+      text: `Click on the following link to verify your email: http://localhost:5173/verify/${verificationToken}`,
+    };
+
+    
+      // Send a verification email to the user
+      const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'fyp2batch19@gmail.com', // Replace with your Gmail email
+          pass: 'cxqe lhsh qtyf xune', // Replace with your Gmail password
+        },
+      });
+
+      
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        // Handle the error (e.g., return an error response)
+        return res.status(500).send({
+          success: false,
+          message: 'Error sending verification email',
+        });
+      }
+      console.log('Verification email sent: ' + info.response);
+    });
 
     res.status(201).send({
       success: true,
-      message: "User Register Successfully",
+      message: "User Register Successfully. Please check your email for verification instructions. ",
       user,
     });
   } catch (error) {
@@ -82,6 +114,16 @@ const loginController = async (req, res) => {
         message: "Email is not registerd",
       });
     }
+// Check if the user's email is verified
+if (!user.isEmailVerified) {
+  return res.status(403).send({
+    success: false,
+    message: 'Email is not verified. Please check your email for verification instructions.',
+  });
+}
+
+
+
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
@@ -93,6 +135,15 @@ const loginController = async (req, res) => {
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+
+    // if (user.userType === 'client') {
+    //   // Redirect the client to the main client dashboard
+    //   res.redirect('/client-dashboard'); // Replace with the actual client dashboard route
+    // } else if (user.userType === 'creator') {
+    //   // Redirect the creator to the main creator dashboard
+    //   res.redirect('/creator-dashboard'); // Replace with the actual creator dashboard route
+    // }
+
     res.status(200).send({
       success: true,
       message: "login successfully",
@@ -114,6 +165,8 @@ const loginController = async (req, res) => {
       error,
     });
   }
+
+  
 };
 
 const getUserVideos = async(req, res) => {
@@ -129,6 +182,6 @@ const getUserVideos = async(req, res) => {
 
 module.exports = {
   registerController,
-  loginController,
+   loginController,
   getUserVideos
 }

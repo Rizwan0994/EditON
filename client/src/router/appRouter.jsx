@@ -14,8 +14,12 @@ const LazySearchedList = lazy(() =>
 );
 const LazyVideoPage = lazy(() => import("../components/videoPage/VideoPage"));
 const LazyPageNotFound = lazy(() => import("../components/PageNotFound"));
-
+// const LazyVerificationSuccessPage=lazy(()=>("../components/VerificationSuccessPage"))
+import VerificationSuccessPage from '../components/VerificationSuccessPage';
+import FinishRegistration from "../components/FinishRegistrationPage/FinishRegistration";
+import UpdateProfile from "../components/ProfileUpdation/UpdateProfile";
 const AppRouter = () => {
+  
   return (
     <BrowserRouter>
       <Routes>
@@ -83,6 +87,15 @@ const AppRouter = () => {
             </Suspense>
           }
         />
+         <Route
+          path="/completeRegistration"
+          element={ < FinishRegistration />}
+        />
+         <Route
+          path="/editprofile"
+          element={ < UpdateProfile />}
+        />
+        <Route path="/verify/:token" element={<VerificationSuccessPage />} />
       </Routes>
       <ToastContainer theme="dark" />
     </BrowserRouter>
