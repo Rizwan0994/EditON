@@ -3,29 +3,56 @@ const mongoose = require('mongoose')
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        
     },
     email: {
         type: String,
-        required: true,
+        
         unique: true
     },
-    phone: {
-        type: Number,
-        required: true,
-    },
-    profession: {
+    // phone: {
+    //     type: Number,
+    //     required: true,
+    // },
+    country: {
         type: String,
-        required: true,
+        
     },
+    state: {
+        type: String,
+        
+    },
+    city:{
+        type: String,
+        
+    },
+    language: {
+        type: String,
+        
+    },
+    terms_conditions: {
+        type: Boolean,
+        
+      },
+      userType: {
+        type: String,
+    
+      },
     password: {
         type: String,
-        required: true
     },
     confirmPassword: {
         type: String,
-        required: true
+        
     },
+    isEmailVerified: {
+        type: Boolean,
+        default: false,
+      },
+      verificationToken: {
+        type: String,
+        default: null,
+      },
     myVideos: {
         type: [String],
         default: []

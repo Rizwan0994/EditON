@@ -51,7 +51,7 @@ const Login = () => {
             z-0">
     </div>
     <div className="w-full mx-auto px-20 space-y-6">
-      <h1 className=" text-8xl font-normal text-purple-400" id='marginT'>Tuner</h1>
+      <h1 className=" text-8xl font-normal text-purple-400" id='marginT'>EditON</h1>
       <p className="text-white text-4xl" id='margin'>Enjoy Multiple videos</p>
       <p className="text-white text-4xl" id='marginp'>at one place</p>
 
