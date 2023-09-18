@@ -18,6 +18,10 @@ const LazyPageNotFound = lazy(() => import("../components/PageNotFound"));
 import VerificationSuccessPage from '../components/VerificationSuccessPage';
 import FinishRegistration from "../components/FinishRegistrationPage/FinishRegistration";
 import UpdateProfile from "../components/ProfileUpdation/UpdateProfile";
+import { MovieMainPage } from "../components/MoviesPage/MovieMainPage";
+import Navbar from "../components/Navbar";
+import CreatorMainPage from "../components/creatorPage/CreatorMainPage";
+
 const AppRouter = () => {
   
   return (
@@ -95,6 +99,10 @@ const AppRouter = () => {
           path="/editprofile"
           element={ < UpdateProfile />}
         />
+        
+        <Route path="/movies" element={<><Navbar/><MovieMainPage/></>} />
+        
+        <Route path="/creator" element={<><Navbar/><CreatorMainPage/></>} />
         <Route path="/verify/:token" element={<VerificationSuccessPage />} />
       </Routes>
       <ToastContainer theme="dark" />

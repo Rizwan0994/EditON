@@ -65,13 +65,13 @@ const HomeCarousel = () => {
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between absolute inset-0">
-        <button
+      <div className="flex items-center justify-center absolute inset-0">
+        {/* <button
           onClick={prev}
           className="opacity-30 hover:opacity-80 bg-white rounded-full"
         >
           <ChevronsLeft size={40} color="black" />
-        </button>
+        </button> */}
         <Box
           sx={{
             display: "flex",
@@ -101,32 +101,14 @@ const HomeCarousel = () => {
           >
             Easily collaborate with the best video creators
           </Typography>
-          <Button
-            variant="contained"
-            sx={{
-              mb: "20px",
-              fontSize: "20px",
-              pl: "0px",
-              pr: "0px",
-              width: "400px",
-              height: "47px",
-              alignSelf: "center",
-              color: "#000",
-              backgroundColor: "#0dcaf0",
-              textTransform: "none",
-              fontFamily: "Noto Sans,sans-serif",
-              fontSize: "20px",
-            }}
-          >
-            Create project
-          </Button>
+         
         </Box>
-        <button
+        {/* <button
           onClick={next}
           className="opacity-30 hover:opacity-80 bg-white rounded-full"
         >
           <ChevronsRight size={40} color="black" />
-        </button>
+        </button> */}
       </div>
       <div className="absolute bottom-4 right-0 left-0">
         <div className="flex items-center justify-center gap-2">

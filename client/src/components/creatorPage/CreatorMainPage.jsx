@@ -5,12 +5,30 @@ import {
   Paper,
   Select,
   Stack,
+  Box,
+  Grid,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import CreatorPageCard from "./CreatorPageCard";
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 const CreatorMainPage = () => {
+  const [movieArray, setMovieArray] = useState([]); // State to store movie data
+
+  useEffect(() => {
+    // Fetch data from your backend API when the component mounts
+    axios.get(`${import.meta.env.VITE_NODE_API}getCreators`)
+      .then(response => {
+        setMovieArray(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []); // Empty dependency array ensures this runs once on mount
   return (
-    <Stack
+  <Box>
+  <Stack
       elevation={3}
       p={2}
       alignItems="center"
@@ -83,6 +101,25 @@ const CreatorMainPage = () => {
         </IconButton>
       </Paper>
     </Stack>
+    <Grid sx={{ backgroundColor: "#fff", p: 6 }} container spacing={2}>
+        {movieArray.map((cardDetails, index) => (
+          <Grid
+            key={index}
+            item
+            xs={12}
+            sm={4}
+            ms={4}
+            md={2.4}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <CreatorPageCard cardDetails={cardDetails} />
+          </Grid>
+        ))}
+      </Grid>
+  </Box>
   );
 };
 
