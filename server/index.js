@@ -96,13 +96,46 @@ app.get('/verify/:token', async (req, res) => {
   app.get ('/getCreators', async (req, res) => {
     try {
       const creators = await userModel.find({ userType: 'creator' });
-      console.log(creators)
+  
       res.status(200).json(creators);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
     }
   });
+
+  //...............get specific creater videos..........
+  
+// Define the API endpoint to get creator video data
+app.get('/api/:userId/videos', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find the user by ID and populate their video data
+    const user = await userModel.findById(userId).populate('myVideos');
+
+    if (!user) {
+      return res.status(404).json({ message: 'No user found' });
+    }
+
+    const videos = await Video.find({ _id: { $in: user.myVideos } });
+
+    const userData = {
+      videos: videos.map(video => ({
+        title: video.title,
+        video: video.video,
+        thumbnail: video.thumbnail,
+        date: video.date,
+      })),
+    };
+
+    return res.json(userData);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
   //..........................UPDATE PROFILE........................
   app.get('/getUserdata/:userId', async (req, res) => {
     try {
