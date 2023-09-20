@@ -9,6 +9,7 @@ const PORT= 4943;
 const videoRouter = require('./routes/video.routes')
 const compression = require('compression')
 const userModel = require("./models/user.model")
+const Video = require('./models/video.model')
 const app = express();
 
 app.use(compression());
@@ -164,6 +165,44 @@ app.put('/updateProfile/:userId', async (req, res) => {
   }
 });
 
+//.............................
+//...............get all users with thier videos.............
+// Define the API endpoint to get all users with their video data
+
+
+app.get('/usersVideos', async (req, res) => {
+  try {
+    // Find all users
+    const users = await userModel.find();
+
+    if (!users) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    const userData = users.map(async user => {
+      const videos = await Video.find({ _id: { $in: user.myVideos } });
+
+      return {
+        name: user.name,
+        id: user._id,
+        videos: videos.map(video => ({
+          title: video.title,
+          video: video.video,
+          thumbnail: video.thumbnail,
+          date: video.date,
+        })),
+      };
+    });
+
+    // Wait for all user data to be retrieved
+    const allUserData = await Promise.all(userData);
+
+    return res.json(allUserData);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
   
 mongoose.connect(process.env.MONGODB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => app.listen(PORT, () => {

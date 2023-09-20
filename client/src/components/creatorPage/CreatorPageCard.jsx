@@ -16,7 +16,7 @@ export default function CreatorPageCard({ cardDetails }) {
         <CardMedia
           component="img"
           sx={{ height: 291, "&:hover": { filter: "none" } }}
-          image="https://d1puzd1182zmjc.cloudfront.net/h/TimonHartman.jpg"
+          image="https://i.postimg.cc/zXb9ntkn/pngegg-1.png"
           alt="green iguana"
         />
         <CardContent>
