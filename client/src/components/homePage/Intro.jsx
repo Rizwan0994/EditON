@@ -10,8 +10,11 @@ import Footer from "./HomeFooter";
 import Edit from "./EditOnServices";
 import Reviews from "./HomeReviews";
 import EditonWork from "./HomeEditOnWokr";
-
-
+import ActionAreaCard from "./Test";
+import CreatorProfile from "../creatorPage/CreatorProfile";
+import { CreatorProfilePage } from "../creatorPage/CreatorProfilePage";
+import { Box } from "@mui/material";
+import Test from "./Test";
 
 const Content = () => {
   const [banner, setBanner] = useState("");
@@ -48,16 +51,14 @@ const Content = () => {
     }
   };
 
- 
-
   return (
     <>
       <HomeCarousel />
       {!isLoading ? (
         <div
-        className={`video-content ${
-          banner ? "relative translate-y-[-125px]" : ""
-        }`}
+          className={`video-content ${
+            banner ? "relative translate-y-[-125px]" : ""
+          }`}
         >
           {/* <div className="btns">
             <div className="recent">Recent</div>
@@ -81,15 +82,17 @@ const Content = () => {
             )}
           </div> */}
 
-          <div>
+          <Box>
             <Manu />
-          </div>
-          <EditonWork />
-          <Edit />
-          <Reviews /> 
-       
-         <Footer />
-
+            <EditonWork />
+            <Edit />
+            <Reviews />
+            {/* <Test text={"Hello"} backgroundColor={"white"} /> */}
+            <Footer />
+          </Box>
+          {/* <div>
+            <CreatorProfilePage />
+          </div> */}
         </div>
       ) : (
         <Loader />

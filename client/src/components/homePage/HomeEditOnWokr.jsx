@@ -1,5 +1,4 @@
 import { Box, Typography, Button } from "@mui/material";
-import EditOnWorksVideo from "../Video/video.mp4";
 import ReactPlayer from "react-player";
 
 import React from "react";
@@ -22,7 +21,7 @@ const EditonWork = () => {
           fontSize: "26px",
         }}
       >
-        Find out how Viedit works
+        Find out how EditON works
       </Typography>
 
       <ReactPlayer
@@ -31,12 +30,6 @@ const EditonWork = () => {
         width="720px"
         controls={true}
       />
-      {/* <img
-        height="405px"
-        width="720px"
-        srcSet="https://embed-ssl.wistia.com/deliveries/cd4ae2258323d98176a4d77daf9ee52a57d85840.webp?image_crop_resized=640x360 320w, https://embed-ssl.wistia.com/deliveries/cd4ae2258323d98176a4d77daf9ee52a57d85840.webp?image_crop_resized=640x360 640w, https://embed-ssl.wistia.com/deliveries/cd4ae2258323d98176a4d77daf9ee52a57d85840.webp?image_crop_resized=960x540 960w, https://embed-ssl.wistia.com/deliveries/cd4ae2258323d98176a4d77daf9ee52a57d85840.webp?image_crop_resized=1280x720 1280w, https://embed-ssl.wistia.com/deliveries/cd4ae2258323d98176a4d77daf9ee52a57d85840.webp?image_crop_resized=1920x1080 1920w, https://embed-ssl.wistia.com/deliveries/cd4ae2258323d98176a4d77daf9ee52a57d85840.webp?image_crop_resized=1920x1080 3840w"
-        src="https://embed-ssl.wistia.com/deliveries/cd4ae2258323d98176a4d77daf9ee52a57d85840.webp?image_crop_resized=960x540"
-      /> */}
 
       <Button
         variant="contained"

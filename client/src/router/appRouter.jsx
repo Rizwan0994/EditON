@@ -15,15 +15,16 @@ const LazySearchedList = lazy(() =>
 const LazyVideoPage = lazy(() => import("../components/videoPage/VideoPage"));
 const LazyPageNotFound = lazy(() => import("../components/PageNotFound"));
 // const LazyVerificationSuccessPage=lazy(()=>("../components/VerificationSuccessPage"))
-import VerificationSuccessPage from '../components/VerificationSuccessPage';
+import VerificationSuccessPage from "../components/VerificationSuccessPage";
 import FinishRegistration from "../components/FinishRegistrationPage/FinishRegistration";
 import UpdateProfile from "../components/ProfileUpdation/UpdateProfile";
 import { MovieMainPage } from "../components/MoviesPage/MovieMainPage";
 import Navbar from "../components/Navbar";
 import CreatorMainPage from "../components/creatorPage/CreatorMainPage";
+import { CreatorProfilePage } from "../components/creatorPage/CreatorProfilePage";
+import { Stack } from "@mui/material";
 
 const AppRouter = () => {
-  
   return (
     <BrowserRouter>
       <Routes>
@@ -91,18 +92,37 @@ const AppRouter = () => {
             </Suspense>
           }
         />
-         <Route
-          path="/completeRegistration"
-          element={ < FinishRegistration />}
+        <Route path="/completeRegistration" element={<FinishRegistration />} />
+        <Route path="/editprofile" element={<UpdateProfile />} />
+        <Route
+          path="/creatorProfile"
+          element={
+            <Stack spacing={0.5}>
+              <Navbar />
+              <CreatorProfilePage />
+            </Stack>
+          }
         />
-         <Route
-          path="/editprofile"
-          element={ < UpdateProfile />}
+
+        <Route
+          path="/movies"
+          element={
+            <Stack direction="column">
+              <Navbar />
+              <MovieMainPage />
+            </Stack>
+          }
         />
-        
-        <Route path="/movies" element={<><Navbar/><MovieMainPage/></>} />
-        
-        <Route path="/creator" element={<><Navbar/><CreatorMainPage/></>} />
+
+        <Route
+          path="/creator"
+          element={
+            <>
+              <Navbar />
+              <CreatorMainPage />
+            </>
+          }
+        />
         <Route path="/verify/:token" element={<VerificationSuccessPage />} />
       </Routes>
       <ToastContainer theme="dark" />
