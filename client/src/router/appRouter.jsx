@@ -21,6 +21,7 @@ import UpdateProfile from "../components/ProfileUpdation/UpdateProfile";
 import { MovieMainPage } from "../components/MoviesPage/MovieMainPage";
 import Navbar from "../components/Navbar";
 import CreatorMainPage from "../components/creatorPage/CreatorMainPage";
+import Chat from "../components/chat/Chat";
 
 const AppRouter = () => {
   
@@ -103,7 +104,9 @@ const AppRouter = () => {
         <Route path="/movies" element={<><Navbar/><MovieMainPage/></>} />
         
         <Route path="/creator" element={<><Navbar/><CreatorMainPage/></>} />
+
         <Route path="/verify/:token" element={<VerificationSuccessPage />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
       <ToastContainer theme="dark" />
     </BrowserRouter>
