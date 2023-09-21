@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         
     },
+    imageUrl: {
+        type: String
+    }
+    ,
     state: {
         type: String,
         
@@ -57,7 +61,10 @@ const UserSchema = new mongoose.Schema({
         type: [String],
         default: []
     }
-})
+},
+    {
+        timestamps: true, // This option adds createdAt and updatedAt fields
+    });
 
 const UserModel = mongoose.model('Users', UserSchema)
 module.exports = UserModel

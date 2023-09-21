@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+
 const registerController = async (req, res) => {
   try {
     const { name, email,  password, confirmPassword } = req.body;

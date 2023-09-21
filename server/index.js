@@ -11,6 +11,8 @@ const compression = require('compression')
 const userModel = require("./models/user.model")
 const Video = require('./models/video.model')
 const app = express();
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2
 
 app.use(compression());
 
@@ -19,6 +21,19 @@ app.use(morgan('dev'))
 app.use(bodyParser.json({limit: "30mb", extended: true}));
 app.use(bodyParser.urlencoded({limit: "30mb", extended: true}));
 app.use(cors())
+
+// Set up multer for image uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+})
+// Handle image upload
+
+const fs = require('fs'); // Import the 'fs' module
 
 app.use("/api/v1/auth", authRoutes);
 
@@ -58,25 +73,89 @@ app.get('/verify/:token', async (req, res) => {
     }
   });
   
-  app.post('/completeRegistration', async (req, res) => {
-    try {
-      // Extract data from the request body, including userType
-      const { name, country, email, state, city, language, terms_conditions, userType } = req.body;
+  // app.post('/completeRegistration', async (req, res) => {
+  //   try {
+  //     // Extract data from the request body, including userType
+  //     const { name, country, email, state, city, language, terms_conditions, userType } = req.body;
   
-      // Define the update operation
-      const update = {
-        $set: {
-          name,
-          country,
-          state,
-          city,
-          language,
-          terms_conditions,
-          userType,
-        },
-      };
+  //     // Define the update operation
+  //     const update = {
+  //       $set: {
+  //         name,
+  //         country,
+  //         state,
+  //         city,
+  //         language,
+  //         terms_conditions,
+  //         userType,
+  //       },
+  //     };
   
-      // Find the user by email and update their document
+  //     // Find the user by email and update their document
+  //     const result = await userModel.findOneAndUpdate({ email }, update, { new: true });
+  
+  //     if (!result) {
+  //       return res.status(404).json({ message: 'User not found' });
+  //     }
+  
+  //     // Send a success response
+  //     res.status(200).json({ message: 'User Registration Completed!', updatedUser: result });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ message: 'Server error' });
+  //   }
+  // });
+  // Update the route to handle both profile upload and registration
+app.post('/completeRegistration', upload.single('image'), async (req, res) => {
+  try {
+    // Extract data from the request body, including userType
+    const {
+      name,
+      country,
+      email,
+      state,
+      city,
+      language,
+      terms_conditions,
+      userType,
+      companyName,
+      companyRegistrationNumber,
+    } = req.body;
+
+    // Create a temporary file to store the uploaded profile image
+    const tempFilePath = './temp-upload.png'; // Choose a temporary file path
+
+    // Write the buffer data to the temporary file
+    fs.writeFileSync(tempFilePath, req.file.buffer);
+
+    // Upload the profile image to Cloudinary
+    const imageUploadResult = await cloudinary.uploader.upload(tempFilePath, {
+      folder: 'profile-pictures',
+    });
+
+    // Delete the temporary file after uploading to Cloudinary
+    fs.unlinkSync(tempFilePath);
+
+ 
+    //Define the update operation
+        const update = {
+          $set: {
+            name,
+            country,
+            state,
+            city,
+            language,
+            terms_conditions,
+            userType,
+            imageUrl: imageUploadResult.secure_url, // Add the profile image URL
+          },
+        };
+    // If the user is a company, add company-specific fields to the userData
+    if (userType === 'company') {
+      userData.companyName = companyName;
+      userData.companyRegistrationNumber = companyRegistrationNumber;
+    }
+// Find the user by email and update their document
       const result = await userModel.findOneAndUpdate({ email }, update, { new: true });
   
       if (!result) {
@@ -85,12 +164,13 @@ app.get('/verify/:token', async (req, res) => {
   
       // Send a success response
       res.status(200).json({ message: 'User Registration Completed!', updatedUser: result });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
-  
+
+   } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
   //.....get all creators....
   app.get ('/getCreators', async (req, res) => {
@@ -236,6 +316,41 @@ app.get('/usersVideos', async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+//........profile upload...........
+
+
+app.post('/profileUpload', upload.single('image'), async (req, res) => {
+  try {
+    // Create a temporary file to store the uploaded image
+    const tempFilePath = './temp-upload.png'; // Choose a temporary file path
+
+    // Write the buffer data to the temporary file
+    fs.writeFileSync(tempFilePath, req.file.buffer);
+
+    // Use the path of the temporary file to upload to Cloudinary
+    const result = await cloudinary.uploader.upload(tempFilePath, {
+      folder: 'profile-pictures',
+    });
+
+    // Delete the temporary file after uploading to Cloudinary
+    fs.unlinkSync(tempFilePath);
+
+    // Save the uploaded image URL to MongoDB
+    const newProfile = new userModel({
+      imageUrl: result.secure_url,
+    });
+
+    await newProfile.save();
+
+    res.status(201).json({ message: 'Profile picture uploaded successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
   
 mongoose.connect(process.env.MONGODB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => app.listen(PORT, () => {
