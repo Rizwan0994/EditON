@@ -28,47 +28,73 @@ import {
   IconButton,
   Grid,
 } from '@mui/material';
-import { Delete, Edit, Add, Close } from '@mui/icons-material';
+import { Delete, Edit, Add, Close, PlayCircleFilled } from '@mui/icons-material';
+import { DialogContentText } from '@mui/material'; // Import DialogContentText
 
 function EditONAdmin() {
   const [users, setUsers] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('creator'); // Default selected tab is 'creator'
+  const [selectedTab, setSelectedTab] = useState('creator');
   const [editUser, setEditUser] = useState(null);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
     country: '',
-    userType: 'creator', // Default user type is 'creator'
+    userType: 'creator',
+  });
+  const [isManageVideosTab, setIsManageVideosTab] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    open: false,
+    userId: null,
   });
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_NODE_API}api/users?type=${selectedTab}`
-      );
+      let response;
+
+      if (isManageVideosTab) {
+        response = await axios.get(`${import.meta.env.VITE_NODE_API}usersVideos`);
+      } else {
+        response = await axios.get(
+          `${import.meta.env.VITE_NODE_API}api/users?type=${selectedTab}`
+        );
+      }
 
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, [selectedTab]);
+  }, [selectedTab, isManageVideosTab]);
 
   const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue);
+    if (newValue === 'managevideos') {
+      setIsManageVideosTab(true);
+    } else {
+      setIsManageVideosTab(false);
+      setSelectedTab(newValue);
+    }
   };
 
   const handleEdit = (user) => {
     setEditUser(user);
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteConfirmation = (userId) => {
+    setDeleteConfirmation({ open: true, userId });
+  };
+
+  const handleDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_NODE_API}api/users/${id}`);
+      await axios.delete(`${import.meta.env.VITE_NODE_API}api/users/${deleteConfirmation.userId}`);
+      setDeleteConfirmation({ open: false, userId: null });
       fetchData();
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -96,11 +122,26 @@ function EditONAdmin() {
         name: '',
         email: '',
         country: '',
-        userType: 'creator', // Reset user type to 'creator' after creation
+        userType: 'creator',
       });
       fetchData();
     } catch (error) {
       console.error('Error creating user:', error);
+    }
+  };
+
+  const handlePlayVideo = (videoUrl) => {
+    window.open(videoUrl);
+  };
+
+  const handleDeleteVideo = async (userId, videoId) => {console.log(userId, videoId)
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_NODE_API}api/users/deleteVideos/${userId}/${videoId}`
+      );
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting video:', error);
     }
   };
 
@@ -114,7 +155,7 @@ function EditONAdmin() {
       </AppBar>
       <Container style={{ marginTop: '20px' }}>
         <Tabs
-          value={selectedTab}
+          value={isManageVideosTab ? 'managevideos' : selectedTab}
           onChange={handleTabChange}
           indicatorColor="primary"
           textColor="primary"
@@ -123,17 +164,20 @@ function EditONAdmin() {
           <Tab label="Creators" value="creator" />
           <Tab label="Clients" value="client" />
           <Tab label="Companies" value="company" />
+          <Tab label="Manage Videos" value="managevideos" />
         </Tabs>
         <Grid container spacing={2}>
           <Grid item>
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<Add />}
-              onClick={() => setCreateUserDialogOpen(true)}
-            >
-              Create User
-            </Button>
+            {!isManageVideosTab && (
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<Add />}
+                onClick={() => setCreateUserDialogOpen(true)}
+              >
+                Create User
+              </Button>
+            )}
           </Grid>
           <Grid item xs={12}>
             <TableContainer component={Paper}>
@@ -141,33 +185,80 @@ function EditONAdmin() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Country</TableCell>
+                    {isManageVideosTab ? (
+                      <TableCell>Videos</TableCell>
+                    ) : (
+                      <>
+                        <TableCell>Email</TableCell>
+                        <TableCell>Country</TableCell>
+                      </>
+                    )}
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user._id}>
-                      <TableCell>{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.country}</TableCell>
-                      <TableCell>
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleEdit(user)}
-                        >
-                          <Edit />
-                        </IconButton>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => handleDelete(user._id)}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                {isLoading ? (
+  <TableRow>
+    <TableCell colSpan={3}>Loading...</TableCell>
+  </TableRow>
+) : (
+  users &&
+  users.map((user) => (
+    <TableRow key={isManageVideosTab ? user.id : user._id}>
+      <TableCell>{user.name}</TableCell>
+      {isManageVideosTab ? (
+        <TableCell>
+          {user.videos && user.videos.length > 0 ? (
+            <ul>
+              {user.videos.map((video) => (
+                <li key={video.title}>
+                  {video.title}
+                  <IconButton
+                    color="primary"
+                    onClick={() => handlePlayVideo(video.video)}
+                  >
+                    <PlayCircleFilled />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() =>
+                      handleDeleteVideo(user.id, video.id)
+                    }
+                  >
+                    <Delete />
+                  </IconButton>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <span>No videos</span>
+          )}
+        </TableCell>
+      ) : (
+        <>
+          <TableCell>{user.email}</TableCell>
+          <TableCell>{user.country}</TableCell>
+        </>
+      )}
+      <TableCell>
+        <IconButton
+          color="primary"
+          onClick={() => handleEdit(user)}
+        >
+          <Edit />
+        </IconButton>
+        <IconButton
+          color="secondary"
+          onClick={() => handleDeleteConfirmation(user._id)}
+        >
+          <Delete />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  ))
+)}
+
+
                 </TableBody>
               </Table>
             </TableContainer>
@@ -189,22 +280,26 @@ function EditONAdmin() {
                     setEditUser({ ...editUser, name: e.target.value })
                   }
                 />
-                <TextField
-                  label="Email"
-                  fullWidth
-                  value={editUser.email}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, email: e.target.value })
-                  }
-                />
-                <TextField
-                  label="Country"
-                  fullWidth
-                  value={editUser.country}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, country: e.target.value })
-                  }
-                />
+                {!isManageVideosTab && (
+                  <>
+                    <TextField
+                      label="Email"
+                      fullWidth
+                      value={editUser.email}
+                      onChange={(e) =>
+                        setEditUser({ ...editUser, email: e.target.value })
+                      }
+                    />
+                    <TextField
+                      label="Country"
+                      fullWidth
+                      value={editUser.country}
+                      onChange={(e) =>
+                        setEditUser({ ...editUser, country: e.target.value })
+                      }
+                    />
+                  </>
+                )}
               </>
             )}
           </DialogContent>
@@ -217,67 +312,88 @@ function EditONAdmin() {
             </Button>
           </DialogActions>
         </Dialog>
-        <Dialog
-          open={createUserDialogOpen}
-          onClose={() => setCreateUserDialogOpen(false)}
-        >
-          <DialogTitle>Create User</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Name"
-              fullWidth
-              value={newUser.name}
-              onChange={(e) =>
-                setNewUser({ ...newUser, name: e.target.value })
-              }
-            />
-            <TextField
-              label="Email"
-              fullWidth
-              value={newUser.email}
-              onChange={(e) =>
-                setNewUser({ ...newUser, email: e.target.value })
-              }
-            />
-            <TextField
-              label="Country"
-              fullWidth
-              value={newUser.country}
-              onChange={(e) =>
-                setNewUser({ ...newUser, country: e.target.value })
-              }
-            />
-            <FormControl>
-              <RadioGroup
-                value={newUser.userType}
+        {!isManageVideosTab && (
+          <Dialog
+            open={createUserDialogOpen}
+            onClose={() => setCreateUserDialogOpen(false)}
+          >
+            <DialogTitle>Create User</DialogTitle>
+            <DialogContent>
+              <TextField
+                label="Name"
+                fullWidth
+                value={newUser.name}
                 onChange={(e) =>
-                  setNewUser({ ...newUser, userType: e.target.value })
+                  setNewUser({ ...newUser, name: e.target.value })
                 }
-              >
-                <FormControlLabel
-                  value="creator"
-                  control={<Radio />}
-                  label="Creator"
-                />
-                <FormControlLabel
-                  value="client"
-                  control={<Radio />}
-                  label="Client"
-                />
-                <FormControlLabel
-                  value="company"
-                  control={<Radio />}
-                  label="Company"
-                />
-              </RadioGroup>
-            </FormControl>
+              />
+              <TextField
+                label="Email"
+                fullWidth
+                value={newUser.email}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, email: e.target.value })
+                }
+              />
+              <TextField
+                label="Country"
+                fullWidth
+                value={newUser.country}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, country: e.target.value })
+                }
+              />
+              <FormControl>
+                <RadioGroup
+                  value={newUser.userType}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, userType: e.target.value })
+                  }
+                >
+                  <FormControlLabel
+                    value="creator"
+                    control={<Radio />}
+                    label="Creator"
+                  />
+                  <FormControlLabel
+                    value="client"
+                    control={<Radio />}
+                    label="Client"
+                  />
+                  <FormControlLabel
+                    value="company"
+                    control={<Radio />}
+                    label="Company"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setCreateUserDialogOpen(false)}>
+                <Close /> Cancel
+              </Button>
+              <Button onClick={handleCreateUser} color="primary">
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+        )}
+        <Dialog
+          open={deleteConfirmation.open}
+          onClose={() => setDeleteConfirmation({ open: false, userId: null })}
+        >
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this user?
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setCreateUserDialogOpen(false)}>
+            <Button onClick={() => setDeleteConfirmation({ open: false, userId: null })}>
               <Close /> Cancel
             </Button>
-            <Button onClick={handleCreateUser} color="primary">
-              Save
+            <Button onClick={handleDelete} color="secondary">
+              Delete
             </Button>
           </DialogActions>
         </Dialog>

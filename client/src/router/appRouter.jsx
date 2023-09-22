@@ -26,7 +26,7 @@ import PaymentForm from "../components/paymentPage/PaymentForm";
 import { loadStripe } from '@stripe/stripe-js';
 import PaymentPage from "../components/paymentPage/PaymentPage";
 import EditONAdmin from "../components/Admin/EditONAdmin";
-
+import SkillTest from "../components/skillTest/skillTest";
 const AppRouter = () => {
   
   return (
@@ -113,6 +113,7 @@ const AppRouter = () => {
         <Route path="/chat" element={<Chat />} />
         <Route path="/payment" element={<PaymentForm/>}/>
         <Route path="/editONAdmin" element={<EditONAdmin/>}/>
+        <Route path="/skilltest/*" element={<SkillTest/>} />
       </Routes>
       <ToastContainer theme="dark" />
     </BrowserRouter>
