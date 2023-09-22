@@ -42,6 +42,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
     
       },
+      testResult: { 
+        type: String, enum: ['pass', 'fail'], default: null 
+      },
+       attempts: { 
+        type: Number, default: 2 
+    },
     password: {
         type: String,
     },

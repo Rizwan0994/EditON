@@ -30,6 +30,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import PaymentPage from "../components/paymentPage/PaymentPage";
 import EditONAdmin from "../components/Admin/EditONAdmin";
 import { Box } from "@mui/system";
+import SkillTest from "../components/skillTest/skillTest";
 
 const AppRouter = () => {
   return (
@@ -160,8 +161,10 @@ const AppRouter = () => {
         />
         <Route path="/verify/:token" element={<VerificationSuccessPage />} />
         <Route path="/chat" element={<Chat />} />
+
         <Route path="/payment" element={<PaymentForm />} />
         <Route path="/editONAdmin" element={<EditONAdmin />} />
+        <Route path="/skilltest/*" element={<SkillTest />} />
       </Routes>
       <ToastContainer theme="dark" />
     </BrowserRouter>
