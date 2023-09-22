@@ -10,6 +10,7 @@ const videoRouter = require('./routes/video.routes')
 const compression = require('compression')
 const userModel = require("./models/user.model")
 const Video = require('./models/video.model')
+const userRoutes = require('./routes/admin.routes')
 const app = express();
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2
@@ -40,8 +41,11 @@ app.use("/api/v1/auth", authRoutes);
 app.get('/', (req, res) => {
     res.send('Hello From  EditON')
 })
-
+//videos api
 app.use('/', videoRouter)
+
+// admin manages users
+app.use('/api/users', userRoutes);
 
 // Create a new endpoint in your routes for email verification
 app.get('/verify/:token', async (req, res) => {
@@ -349,6 +353,63 @@ app.post('/profileUpload', upload.single('image'), async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+//......................hire me payment method..........
+const stripe = require('stripe')('sk_test_51Muy0GHaLC1wsFOq7ivBQ5PyLAdWpyhni8BrGDhgKUE3QSmrmaZZ00JdApKQESUcoaiH0YC9kzGFJRb1V0Adq09m004ESmaVsd');
+
+// Create Mongoose models
+const Order = mongoose.model("Hiring Payments", {
+  creatorName: String, // Creator name
+  email: String,
+  price: Number,
+});
+
+
+
+
+
+const handlePayment = async (req, res) => {
+  try {
+    const { id, amount, orders } = req.body;
+     console.log(req.body)
+    // Parse orders array from JSON string
+    const parsedOrders = JSON.parse(orders);
+    
+    if (!parsedOrders || parsedOrders.length === 0 || parsedOrders.some(order => !order.price || !order.email || !order.creatorName)) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: "usd",
+      description: "Orders Payment",
+      payment_method_types: ['card'],
+      payment_method_data: {
+        type: 'card',
+        card: {
+          token: id
+        }
+      },
+      confirm: true
+    });
+
+    console.log(paymentIntent);
+    
+    // Save order details to the database using the Order model
+    const orderDocs = await Order.create(parsedOrders);
+
+    // Remove ordered products from the database by creator name using the Product model
+   // const creatorNames = parsedOrders.map(order => order.productName);
+    // await Product.deleteMany({ name: { $in: creatorNames } });
+
+    res.json({ message: "Payment successful" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Payment failed" });
+  }
+};
+
+app.post("/api/payment", handlePayment);
 
 
   
