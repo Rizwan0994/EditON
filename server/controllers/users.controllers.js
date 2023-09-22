@@ -152,6 +152,7 @@ if (!user.isEmailVerified) {
         _id: user._id,
         name: user.name,
         email: user.email,
+        userType: user.userType,
         phone: user.phone,
         profession: user.profession,
         myVideos: user.myVideos

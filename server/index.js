@@ -307,6 +307,7 @@ app.get('/usersVideos', async (req, res) => {
           video: video.video,
           thumbnail: video.thumbnail,
           date: video.date,
+          id: video._id,
         })),
       };
     });
@@ -412,7 +413,49 @@ const handlePayment = async (req, res) => {
 app.post("/api/payment", handlePayment);
 
 
-  
+/////skill test...............
+app.put('/api/usertest/:id', async (req, res) => {
+  const userId = req.params.id;
+  const { testResult, attempts } = req.body;
+
+  try {
+    const user = await userModel.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    user.testResult = testResult;
+    user.attempts = attempts;
+
+    await user.save();
+
+    res.json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get('/api/usertest/:id/testResult', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await userModel.findOne({ _id: userId });
+   
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ result: user.testResult });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+  //............end.................. testskill.........
 mongoose.connect(process.env.MONGODB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => app.listen(PORT, () => {
         console.log(`Server running on port: ${PORT}`)
