@@ -22,6 +22,10 @@ import { MovieMainPage } from "../components/MoviesPage/MovieMainPage";
 import Navbar from "../components/Navbar";
 import CreatorMainPage from "../components/creatorPage/CreatorMainPage";
 import Chat from "../components/chat/Chat";
+import PaymentForm from "../components/paymentPage/PaymentForm";
+import { loadStripe } from '@stripe/stripe-js';
+import PaymentPage from "../components/paymentPage/PaymentPage";
+import EditONAdmin from "../components/Admin/EditONAdmin";
 
 const AppRouter = () => {
   
@@ -107,6 +111,8 @@ const AppRouter = () => {
 
         <Route path="/verify/:token" element={<VerificationSuccessPage />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/payment" element={<PaymentForm/>}/>
+        <Route path="/editONAdmin" element={<EditONAdmin/>}/>
       </Routes>
       <ToastContainer theme="dark" />
     </BrowserRouter>
