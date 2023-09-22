@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Avatar, CardActionArea, Stack } from "@mui/material";
-import LanguageIcon from "@mui/icons-material/Language";
+import { useNavigate } from "react-router-dom";
+import { getCreators } from "../Utils/data";
 
 export default function MovieCardPage({ cardDetails }) {
   // Check if there are videos available for this user
@@ -16,6 +17,7 @@ export default function MovieCardPage({ cardDetails }) {
 
   // State variable to track whether the user is hovering over the card
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   // Function to handle hover events
   const handleMouseEnter = () => {
@@ -25,6 +27,19 @@ export default function MovieCardPage({ cardDetails }) {
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
+
+  const [creatorList, setCreatorList] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getCreators();
+        setCreatorList(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
 
   return (
     <Card
@@ -37,39 +52,49 @@ export default function MovieCardPage({ cardDetails }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          sx={{ height: 200, width: 393, "&:hover": { filter: "none" } }}
-          image={firstVideo.thumbnail} // Use the thumbnail of the first video
-          alt={firstVideo.title} // Use the title of the first video as alt text
-        />
-        {isHovered && (
-          // Show video on hover and play it
-          <video
-            src={firstVideo.video}
-            controls
-            width="100%"
-            height="auto"
-            autoPlay
-            loop
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 1,
-            }}
-          />
-        )}
-        <CardContent
+      <CardMedia
+        component="img"
+        sx={{ height: 200, width: 393, "&:hover": { filter: "none" } }}
+        image={firstVideo.thumbnail} // Use the thumbnail of the first video
+        alt={firstVideo.title} // Use the title of the first video as alt text
+      />
+      {isHovered && (
+        // Show video on hover and play it
+        <video
+          src={firstVideo.video}
+          controls
+          width="100%"
+          height="auto"
+          autoPlay
+          loop
           style={{
-            position: "relative",
-            zIndex: 2,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+        />
+      )}
+      <CardContent
+        style={{
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        <Typography gutterBottom variant="h6">
+          {firstVideo.title} {/* Use the title of the first video */}
+        </Typography>
+        <CardActionArea
+          onClick={() => {
+            const creator = creatorList.filter(
+              (creator) => creator._id === cardDetails.id
+            );
+            // alert(JSON.stringify(cardDetails));
+            // alert(JSON.stringify(creatorList));
+            // alert(JSON.stringify(creator));
+            navigate("/creatorProfile", { state: creator[0] });
           }}
         >
-          <Typography gutterBottom variant="h6">
-            {firstVideo.title} {/* Use the title of the first video */}
-          </Typography>
           <Stack direction="row" spacing={1} p={1} alignItems="center">
             <Avatar
               alt={cardDetails.name}
@@ -79,8 +104,8 @@ export default function MovieCardPage({ cardDetails }) {
             />
             <Typography>by {cardDetails.name}</Typography>
           </Stack>
-        </CardContent>
-      </CardActionArea>
+        </CardActionArea>
+      </CardContent>
     </Card>
   );
 }

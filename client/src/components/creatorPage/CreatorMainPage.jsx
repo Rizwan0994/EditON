@@ -9,6 +9,7 @@ import {
 import CreatorPageCard from "./CreatorPageCard";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { getCreators } from "../Utils/data";
 
 const CreatorMainPage = () => {
   const [CreatorList, setCreatorList] = useState([]); // State to store movie data
@@ -17,15 +18,26 @@ const CreatorMainPage = () => {
 
   useEffect(() => {
     // Fetch data from your backend API when the component mounts
-    axios
-      .get(`${import.meta.env.VITE_NODE_API}getCreators`)
-      .then((response) => {
-        setCreatorList(response.data);
-        setShowCreator(response.data);
-      })
-      .catch((error) => {
+    // axios
+    //   .get(`${import.meta.env.VITE_NODE_API}getCreators`)
+    //   .then((response) => {
+    //     setCreatorList(response.data);
+    //     setShowCreator(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching data:", error);
+    //   });
+
+    async function fetchData() {
+      try {
+        const data = await getCreators();
+        setCreatorList(data);
+        setShowCreator(data);
+      } catch (error) {
         console.error("Error fetching data:", error);
-      });
+      }
+    }
+    fetchData();
   }, []); // Empty dependency array ensures this runs once on mount
 
   const handleCreatorListbyCountry = (event, value) => {

@@ -107,10 +107,10 @@ const AppRouter = () => {
         <Route
           path="/movies"
           element={
-            <Stack direction="column">
+            <>
               <Navbar />
               <MovieMainPage />
-            </Stack>
+            </>
           }
         />
 

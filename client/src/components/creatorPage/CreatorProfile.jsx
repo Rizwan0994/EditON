@@ -4,20 +4,20 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Stack, Divider, Button } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import LanguageIcon from "@mui/icons-material/Language";
 import TranslateIcon from "@mui/icons-material/Translate";
 import ChatIcon from "@mui/icons-material/Chat";
+import axios from "axios";
+import { json } from "react-router-dom";
 
 export default function CreatorProfile({ cardDetails }) {
   const profileInformation = [
-    { id: 1, icon: LanguageIcon, info: "UK" },
-    { id: 2, icon: LocationOnIcon, info: "London" },
-    { id: 3, icon: LocationCityIcon, info: "London" },
-    { id: 4, icon: PersonAddIcon, info: "Joined in June 2019" },
-    { id: 5, icon: TranslateIcon, info: "English" },
+    { id: 1, icon: LanguageIcon, info: cardDetails.country },
+    { id: 2, icon: LocationCityIcon, info: cardDetails.city },
+    { id: 3, icon: PersonAddIcon, info: "Joined in June 2019" },
+    { id: 4, icon: TranslateIcon, info: cardDetails.language },
   ];
   return (
     <Card

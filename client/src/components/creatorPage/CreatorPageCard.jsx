@@ -9,11 +9,18 @@ import LanguageIcon from "@mui/icons-material/Language";
 
 export default function CreatorPageCard({ cardDetails }) {
   const navigate = useNavigate();
+
+  const handleProfilePage = () => {
+    const data = { message: "hello from other side" };
+    navigate("/creatorProfile", {
+      state: cardDetails,
+    });
+  };
   return (
     <Card
       sx={{ maxWidth: 278, borderRadius: "12px", border: "1px solid #ced4da" }}
     >
-      <CardActionArea onClick={() => navigate("/creatorProfile")}>
+      <CardActionArea onClick={handleProfilePage}>
         <CardMedia
           component="img"
           sx={{ height: 291, "&:hover": { filter: "none" } }}

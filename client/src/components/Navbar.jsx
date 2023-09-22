@@ -4,6 +4,7 @@ import { useAuth } from "../contextApi/appContext";
 import { toast } from "react-toastify";
 import { searchByTitle } from "../services/nodeApi";
 import { VideoContext } from "../contextApi/VideoContextApi";
+import { Profile } from "./Profile";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
@@ -59,7 +60,7 @@ const Navbar = () => {
             </div>
           </div>
           <div className="flex">
-            <div className="mt-2 ml-2 md:ml-6 md:flex md:items-center text-white">
+            {/* <div className="mt-2 ml-2 md:ml-6 md:flex md:items-center text-white">
               <input
                 type="text"
                 placeholder="Search"
@@ -74,7 +75,7 @@ const Navbar = () => {
                 }}
                 value={searchText}
               />
-            </div>
+            </div> */}
           </div>
           <div className="mx-2 flex items-center sm:hidden">
             <button
@@ -144,19 +145,20 @@ const Navbar = () => {
                 <p className="block px-3 py-2 rounded-md text-base font-medium text-gray-300">
                   |
                 </p>
-                <NavLink
+                {/* <NavLink
                   to="/"
                   onClick={handleLogout}
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white"
                 >
                   Sign out
-                </NavLink>
-                <NavLink
+                </NavLink> */}
+                {/* <NavLink
                   to="/editprofile"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white"
                 >
                   Profile
-                </NavLink>
+                </NavLink> */}
+                <Profile onClick={handleLogout} auth={auth} />
               </div>
             </div>
           )}
@@ -196,13 +198,14 @@ const Navbar = () => {
             >
               Upload
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="/"
               onClick={handleLogout}
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white"
             >
               Sign out
-            </NavLink>
+            </NavLink> */}
+            <Profile onClick={handleLogout} auth={auth} />
           </div>
         </div>
       )}
