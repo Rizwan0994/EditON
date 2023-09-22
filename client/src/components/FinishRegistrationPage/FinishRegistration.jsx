@@ -3,10 +3,13 @@ import axios from 'axios';
 import "./FinishRegistration.css"
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
 
 function FinishRegistration() {
   const [isClient, setIsClient] = useState(true);
   const [isCompany, setIsCompany] = useState(false);
+  const [image, setImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     country: '',
@@ -21,6 +24,31 @@ function FinishRegistration() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    setPreviewImage(URL.createObjectURL(file));
+  };
+  //.......profile upload
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append('image', image);
+     console.log(formData.get('image'));
+    try {
+      await axios.post(`${import.meta.env.VITE_NODE_API}profileUpload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      // Reset form fields after successful upload
+      setImage(null);
+      setPreviewImage(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  //................
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
     setFormData({
@@ -75,32 +103,78 @@ function FinishRegistration() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
 
-    if (validateForm()) {
-      try {
-        const response = await axios.post(`${import.meta.env.VITE_NODE_API}completeRegistration`, {
-          ...formData,
-          userType: isClient ? 'client' : isCompany ? 'company' : 'creator',
-        });
-        console.log(response.data);
-        toast.success('Registration completed successfully');
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
-      } catch (error) {
-        console.error(error);
-        toast.error('Registration failed. Please try again.');
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  if (validateForm()) {
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('image', image);
+
+      // Add other form data fields to the FormData object
+      for (const key in formData) {
+        formDataToSend.append(key, formData[key]);
       }
+        // Set the userType based on the selected radio button
+        formDataToSend.append('userType', isClient ? 'client' : isCompany ? 'company' : 'creator');
+
+
+      // Complete user registration including profile image upload
+      const response = await axios.post(`${import.meta.env.VITE_NODE_API}completeRegistration`, formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log(response.data);
+      toast.success('Registration completed successfully');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+      toast.error('Registration failed. Please try again.');
     }
-  };
+  }
+};
 
   return (
     <div className="sign_up">
+            {/* <form encType="multipart/form-data"
+        style={{ position: 'relative', top: '20px', left: '300px' }}>
+           {previewImage && (
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <img src={previewImage} alt="Profile Preview" style={{ width: '150px', height: '150px' }} />
+          
+          </div>
+        )}
+        <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} />
+        <button
+          type="button"
+          onClick={handleUpload}
+          style={{ backgroundColor: 'gray', color: 'white', padding
+          : '10px', borderRadius: '5px', border: 'none', cursor: 'pointer', marginTop: '10px' }}
+        >
+          Click to Upload
+        </button>
+       
+      </form> */}
+      <div style={{ position: 'relative', top: '20px', left: '300px' }} >
+      {previewImage && (
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <img src={previewImage} alt="Profile Preview" style={{ width: '150px', height: '150px' }} />
+          
+          </div>
+        )}
+      </div>
+      
       <div className="container">
+        
         <h1 style={{ fontSize: '30px', marginTop: '-50px' }}>Finish Registration</h1>
+        
         <form onSubmit={handleSubmit}>
+          
           <div className="radio-container">
             <div>
               <input
@@ -277,6 +351,8 @@ function FinishRegistration() {
               </div>
             </>
           )}
+            <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} /> 
+            <br/>
 
           <div className="check">
             <input
@@ -291,6 +367,8 @@ function FinishRegistration() {
             </label>
             {errors.terms_conditions && <p className="text-red-500">{errors.terms_conditions}</p>}
           </div>
+          
+        
           <button
             id="register_btn"
             type="submit"
@@ -299,6 +377,8 @@ function FinishRegistration() {
             Sign Up
           </button>
         </form>
+       
+
         <ToastContainer />
       </div>
     </div>

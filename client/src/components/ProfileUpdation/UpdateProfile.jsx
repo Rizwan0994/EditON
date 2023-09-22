@@ -262,8 +262,8 @@ function UpdateProfile() {
   ];
 
   return (
-    <Container sx={{ backgroundColor: "pink" }} maxWidth="xs">
-      <Typography variant="h4" gutterBottom>
+    <Container sx={{ backgroundColor: "white", mt: 10 }} maxWidth="xs">
+      <Typography color="black" variant="h4" gutterBottom>
         Update Profile
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -306,9 +306,8 @@ function UpdateProfile() {
               id="outlined-select-currency"
               select
               label="Select"
-              defaultValue="Faislabad"
               value={formData.city}
-              helperText="Please select your city"
+              helperText={formErrors.city}
               fullWidth
               variant="standard"
               name="city"
@@ -371,7 +370,13 @@ function UpdateProfile() {
             </TextField>
           </Grid>
         </Grid>
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Button
+          sx={{ mt: 4 }}
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+        >
           Sign Up
         </Button>
       </form>

@@ -26,6 +26,9 @@ export const Profile = (props) => {
       props.onClick();
     } else if (action === "Edit Profile") {
       navigate("/editprofile");
+    } else if (action === "My Profile") {
+      navigate("/creatorProfile", { state: props.auth.user });
+      // alert(JSON.stringify(props.auth.user));
     }
     setAnchorEl(null);
   };
@@ -33,14 +36,14 @@ export const Profile = (props) => {
   return (
     <Box>
       <Tooltip title="Account settings">
-        <IconButton onClick={handleOpenMenu} size="small" sx={{ ml: 2 }}>
+        <IconButton onClick={handleOpenMenu} size="small" sx={{ ml: 2, p: 0 }}>
           <Avatar sx={{ width: 45, height: 45 }}>
             {props.auth.user.name.split(" ").map((word) => word.charAt(0))}
           </Avatar>
         </IconButton>
       </Tooltip>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)}>
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={() => handleCloseMenu("My Profile")}>
           <ListItemIcon>
             <AccountCircleIcon />
           </ListItemIcon>

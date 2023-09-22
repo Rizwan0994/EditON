@@ -10,15 +10,16 @@ import LanguageIcon from "@mui/icons-material/Language";
 import TranslateIcon from "@mui/icons-material/Translate";
 import ChatIcon from "@mui/icons-material/Chat";
 import axios from "axios";
-import { json } from "react-router-dom";
+import { Navigate, json, useNavigate } from "react-router-dom";
 
 export default function CreatorProfile({ cardDetails }) {
   const profileInformation = [
     { id: 1, icon: LanguageIcon, info: cardDetails.country },
     { id: 2, icon: LocationCityIcon, info: cardDetails.city },
-    { id: 3, icon: PersonAddIcon, info: "Joined in June 2019" },
+    { id: 3, icon: PersonAddIcon, info: cardDetails.createdAt },
     { id: 4, icon: TranslateIcon, info: cardDetails.language },
   ];
+  const navigate = useNavigate();
   return (
     <Card
       sx={{
@@ -56,6 +57,7 @@ export default function CreatorProfile({ cardDetails }) {
           }}
           fullWidth
           variant="contained"
+          onClick={() => navigate("/payment", { state: cardDetails })}
         >
           Hire
         </Button>
@@ -73,6 +75,7 @@ export default function CreatorProfile({ cardDetails }) {
           fullWidth
           variant="contained"
           endIcon={<ChatIcon />}
+          onClick={() => navigate("/chat")}
         >
           Chat
         </Button>

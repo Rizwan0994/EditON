@@ -18,9 +18,20 @@ export default function CreatorPageCard({ cardDetails }) {
   };
   return (
     <Card
-      sx={{ maxWidth: 278, borderRadius: "12px", border: "1px solid #ced4da" }}
+      sx={{
+        maxWidth: 278,
+        borderRadius: "12px",
+        border: "1px solid #ced4da",
+      }}
     >
-      <CardActionArea onClick={handleProfilePage}>
+      <CardActionArea
+        sx={{
+          "&:hover": {
+            backgroundColor: "white",
+          },
+        }}
+        onClick={handleProfilePage}
+      >
         <CardMedia
           component="img"
           sx={{ height: 291, "&:hover": { filter: "none" } }}

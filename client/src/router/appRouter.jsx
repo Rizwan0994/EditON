@@ -24,6 +24,13 @@ import CreatorMainPage from "../components/creatorPage/CreatorMainPage";
 import { CreatorProfilePage } from "../components/creatorPage/CreatorProfilePage";
 import { Stack } from "@mui/material";
 
+import Chat from "../components/chat/Chat";
+import PaymentForm from "../components/paymentPage/PaymentForm";
+import { loadStripe } from "@stripe/stripe-js";
+import PaymentPage from "../components/paymentPage/PaymentPage";
+import EditONAdmin from "../components/Admin/EditONAdmin";
+import { Box } from "@mui/system";
+
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -93,7 +100,15 @@ const AppRouter = () => {
           }
         />
         <Route path="/completeRegistration" element={<FinishRegistration />} />
-        <Route path="/editprofile" element={<UpdateProfile />} />
+        <Route
+          path="/editprofile"
+          element={
+            <Box sx={{ backgroundColor: "white" }}>
+              <Navbar />
+              <UpdateProfile />
+            </Box>
+          }
+        />
         <Route
           path="/creatorProfile"
           element={
@@ -123,7 +138,30 @@ const AppRouter = () => {
             </>
           }
         />
+
+        <Route
+          path="/movies"
+          element={
+            <>
+              <Navbar />
+              <MovieMainPage />
+            </>
+          }
+        />
+
+        <Route
+          path="/creator"
+          element={
+            <>
+              <Navbar />
+              <CreatorMainPage />
+            </>
+          }
+        />
         <Route path="/verify/:token" element={<VerificationSuccessPage />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/payment" element={<PaymentForm />} />
+        <Route path="/editONAdmin" element={<EditONAdmin />} />
       </Routes>
       <ToastContainer theme="dark" />
     </BrowserRouter>

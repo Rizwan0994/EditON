@@ -16,6 +16,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    const storedAuth = JSON.parse(localStorage.getItem("auth"));
+    const userId = storedAuth?.user?.userType;
     setAuth({
       ...auth,
       user: null,
@@ -23,6 +25,7 @@ const Navbar = () => {
     });
     localStorage.removeItem("auth");
     notifyB("Logout Successfully");
+    navigate("/");
   };
 
   const search = async (searchText) => {

@@ -95,8 +95,8 @@ export const CreatorProfilePage = () => {
                       key={index}
                       item
                       xs={12}
-                      md={videos.length === 1 ? 12 : 4}
-                      lg={videos.length === 1 ? 12 : 3}
+                      md={videos.length === 2 ? 12 : 4}
+                      lg={videos.length === 2 ? 12 : 3}
                     >
                       <Card sx={{ borderRadius: "12px", maxWidth: "394px" }}>
                         <ReactPlayer
