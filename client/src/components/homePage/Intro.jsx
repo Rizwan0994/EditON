@@ -4,17 +4,18 @@ import { getAllVideos } from "../../services/nodeApi";
 import { VideoContext } from "../../contextApi/VideoContextApi";
 import Loader from "../Loader";
 import HomeCarousel from "./HomeCarousel";
-
+import Pagination from "../Pagination";
 import Manu from "./Page";
 import Footer from "./HomeFooter";
 import Edit from "./EditOnServices";
 import Reviews from "./HomeReviews";
 import EditonWork from "./HomeEditOnWokr";
-import ActionAreaCard from "./Test";
+// import ActionAreaCard from "./Test";
 import CreatorProfile from "../creatorPage/CreatorProfile";
 import { CreatorProfilePage } from "../creatorPage/CreatorProfilePage";
 import { Box } from "@mui/material";
 import Test from "./Test";
+import { Profile } from "../Profile";
 
 const Content = () => {
   const [banner, setBanner] = useState("");
@@ -65,8 +66,8 @@ const Content = () => {
             <div className="view-all" onClick={handleViewButton}>
               {name}
             </div>
-          </div>
-          <div className="videos">
+          </div> */}
+          {/* <div className="videos">
             {!banner ? (
               <Pagination
                 videos={allVideos.slice(0, 4)}
@@ -89,10 +90,8 @@ const Content = () => {
             <Reviews />
             {/* <Test text={"Hello"} backgroundColor={"white"} /> */}
             <Footer />
+            {/* <Test /> */}
           </Box>
-          {/* <div>
-            <CreatorProfilePage />
-          </div> */}
         </div>
       ) : (
         <Loader />

@@ -72,6 +72,7 @@ export const deleteVideo = async (userId, videoId) => {
 export const getAllVideos = async () => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_NODE_API}video`)
+        console.log(response.data)
         return response.data
     } catch (err) {
         return err.message

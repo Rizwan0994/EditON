@@ -3,7 +3,7 @@ import EditOnGuarantee from "../image/EditOnService/EditOnGuarantee.png";
 import HowItWorkLogo from "../image/EditOnService/HowItWorkLogo.png";
 import WorldWideConnectLogo from "../image/EditOnService/WorldWideConnectLogo.png";
 import InspireLogo from "../image/EditOnService/InspireLogo.png";
-
+import { useNavigate } from 'react-router-dom';
 const Edit = () => {
   const services = [
     { id: 1, logo: InspireLogo, text: "Inspire with great movies" },
@@ -16,11 +16,17 @@ const Edit = () => {
     { id: 4, logo: EditOnGuarantee, text: "Money-back guarantee" },
   ];
 
+    const navigate = useNavigate();
+
+  const handleRegisterClick = () => {
+    navigate('/register'); // Replace '/register' with the desired register page route
+  };
+
   const Content = [
-    { id: 1, count: 4952, text: "Movies" },
-    { id: 2, count: 11299, text: "Creators" },
-    { id: 3, count: 68, text: "Languages" },
-    { id: 4, count: 173, text: "Countries" },
+    { id: 1, count: 4, text: "Movies" },
+    { id: 2, count: 11, text: "Creators" },
+    { id: 3, count: 5, text: "Languages" },
+    { id: 4, count: 3, text: "Countries" },
   ];
   const serivceBackgroundImage =
     "https://d1puzd1182zmjc.cloudfront.net/h/earth.jpg";
@@ -73,19 +79,20 @@ const Edit = () => {
             width: "400px",
             height: "47px",
             alignSelf: "center",
-          }}
-        >
+          }} 
+           onClick={handleRegisterClick} >
           Register
         </Button>
       </Box>
       <Box
         sx={{
-          backgroundImage: `url(${serivceBackgroundImage})`,
+          // backgroundImage: `url(${serivceBackgroundImage})`,
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
+          marginTop: "20px",
         }}
       >
         <img
@@ -98,6 +105,7 @@ const Edit = () => {
             color: "white",
             m: "16px 0px",
             fontSize: "26px",
+         
             fontFamily: "Noto Sans, sans-serif",
           }}
           component="h2"
@@ -107,23 +115,32 @@ const Edit = () => {
 
         {Content.map((cont) => (
           <Box sx={{ display: "flex", alignItems: "center" }} key={cont.id}>
-            <Typography
+            <Typography 
               sx={{
                 fontSize: "35px",
                 fontFamily: "Numbers, sans-serif",
                 pr: "5px",
                 letterSpacing: "5px",
-                backgroundColor: "#fff",
-                color: "#07162c",
+                backgroundColor: "transparent",
+               
+                color: "#fff",
+
+               
               }}
             >
               {cont.count}
             </Typography>
-            <Typography
+            <Typography 
               sx={{
                 pl: "5px",
-                fontSize: "26px",
+                fontSize: "25px",
                 fontFamily: "Noto Sans, sans-serif",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "10px",
+               
+
               }}
             >
               {cont.text}

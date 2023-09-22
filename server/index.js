@@ -9,6 +9,7 @@ const PORT= 4943;
 const videoRouter = require('./routes/video.routes')
 const compression = require('compression')
 const userModel = require("./models/user.model")
+const Video = require('./models/video.model')
 const app = express();
 
 app.use(compression());
@@ -95,13 +96,46 @@ app.get('/verify/:token', async (req, res) => {
   app.get ('/getCreators', async (req, res) => {
     try {
       const creators = await userModel.find({ userType: 'creator' });
-      console.log(creators)
+  
       res.status(200).json(creators);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
     }
   });
+
+  //...............get specific creater videos..........
+  
+// Define the API endpoint to get creator video data
+app.get('/api/:userId/videos', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find the user by ID and populate their video data
+    const user = await userModel.findById(userId).populate('myVideos');
+
+    if (!user) {
+      return res.status(404).json({ message: 'No user found' });
+    }
+
+    const videos = await Video.find({ _id: { $in: user.myVideos } });
+
+    const userData = {
+      videos: videos.map(video => ({
+        title: video.title,
+        video: video.video,
+        thumbnail: video.thumbnail,
+        date: video.date,
+      })),
+    };
+
+    return res.json(userData);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
   //..........................UPDATE PROFILE........................
   app.get('/getUserdata/:userId', async (req, res) => {
     try {
@@ -164,6 +198,44 @@ app.put('/updateProfile/:userId', async (req, res) => {
   }
 });
 
+//.............................
+//...............get all users with thier videos.............
+// Define the API endpoint to get all users with their video data
+
+
+app.get('/usersVideos', async (req, res) => {
+  try {
+    // Find all users
+    const users = await userModel.find();
+
+    if (!users) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    const userData = users.map(async user => {
+      const videos = await Video.find({ _id: { $in: user.myVideos } });
+
+      return {
+        name: user.name,
+        id: user._id,
+        videos: videos.map(video => ({
+          title: video.title,
+          video: video.video,
+          thumbnail: video.thumbnail,
+          date: video.date,
+        })),
+      };
+    });
+
+    // Wait for all user data to be retrieved
+    const allUserData = await Promise.all(userData);
+
+    return res.json(allUserData);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
   
 mongoose.connect(process.env.MONGODB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => app.listen(PORT, () => {

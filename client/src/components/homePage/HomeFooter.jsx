@@ -19,7 +19,7 @@ const Footer = () => {
       <Box
         sx={{
           display: "flex",
-          backgroundColor: "#3f3f41",
+          backgroundColor: "rgb(21, 21, 37)",
           gap: "8px",
           pt: "16px",
         }}
@@ -37,7 +37,7 @@ const Footer = () => {
             sx={{
               display: "inline-block",
               fontSize: "50px",
-              ml: "14px",
+              ml: "-15",
               color: "#D8B4FE",
             }}
           >
@@ -56,7 +56,7 @@ const Footer = () => {
             ))}
           </Box>
           <Typography sx={{ p: "4.8px 0px", textAlign: "center" }}>
-            Phone: +1 561 501 1304 - WhatsApp, Viber, Telegram
+            Phone: +92 300 9449466 - WhatsApp, Telegram
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <LinkedInIcon sx={{ fontSize: "35px", m: "8px 16px" }} />
@@ -67,7 +67,7 @@ const Footer = () => {
         </Box>
       </Box>
       <Typography
-        sx={{ backgroundColor: "#212529", p: "11.2px 0px 9.6px 30px" }}
+        sx={{  backgroundColor: "rgb(21, 21, 37)", p: "11.2px 0px 9.6px 30px" }}
       >
         © 2013-2023 EditOn. All rights reserved.
       </Typography>
