@@ -3,7 +3,7 @@ import EditOnGuarantee from "../image/EditOnService/EditOnGuarantee.png";
 import HowItWorkLogo from "../image/EditOnService/HowItWorkLogo.png";
 import WorldWideConnectLogo from "../image/EditOnService/WorldWideConnectLogo.png";
 import InspireLogo from "../image/EditOnService/InspireLogo.png";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 const Edit = () => {
   const services = [
     { id: 1, logo: InspireLogo, text: "Inspire with great movies" },
@@ -16,10 +16,10 @@ const Edit = () => {
     { id: 4, logo: EditOnGuarantee, text: "Money-back guarantee" },
   ];
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleRegisterClick = () => {
-    navigate('/register'); // Replace '/register' with the desired register page route
+    navigate("/register"); // Replace '/register' with the desired register page route
   };
 
   const Content = [
@@ -79,8 +79,9 @@ const Edit = () => {
             width: "400px",
             height: "47px",
             alignSelf: "center",
-          }} 
-           onClick={handleRegisterClick} >
+          }}
+          onClick={handleRegisterClick}
+        >
           Register
         </Button>
       </Box>
@@ -92,7 +93,8 @@ const Edit = () => {
           flexDirection: "column",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          marginTop: "20px",
+          paddingTop: "20px",
+          backgroundColor: "#1F2937",
         }}
       >
         <img
@@ -105,7 +107,7 @@ const Edit = () => {
             color: "white",
             m: "16px 0px",
             fontSize: "26px",
-         
+
             fontFamily: "Noto Sans, sans-serif",
           }}
           component="h2"
@@ -115,22 +117,20 @@ const Edit = () => {
 
         {Content.map((cont) => (
           <Box sx={{ display: "flex", alignItems: "center" }} key={cont.id}>
-            <Typography 
+            <Typography
               sx={{
                 fontSize: "35px",
                 fontFamily: "Numbers, sans-serif",
                 pr: "5px",
                 letterSpacing: "5px",
                 backgroundColor: "transparent",
-               
-                color: "#fff",
 
-               
+                color: "#fff",
               }}
             >
               {cont.count}
             </Typography>
-            <Typography 
+            <Typography
               sx={{
                 pl: "5px",
                 fontSize: "25px",
@@ -139,8 +139,6 @@ const Edit = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: "10px",
-               
-
               }}
             >
               {cont.text}

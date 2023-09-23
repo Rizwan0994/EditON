@@ -1,76 +1,71 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        
+      type: String,
     },
     email: {
-        type: String,
-        
-        unique: true
+      type: String,
+
+      unique: true,
     },
     // phone: {
     //     type: Number,
     //     required: true,
     // },
     country: {
-        type: String,
-        
+      type: String,
     },
     imageUrl: {
-        type: String
-    }
-    ,
-    state: {
-        type: String,
-        
+      type: String,
     },
-    city:{
-        type: String,
-        
+    state: {
+      type: String,
+    },
+    city: {
+      type: String,
     },
     language: {
-        type: String,
-        
+      type: String,
     },
     terms_conditions: {
-        type: Boolean,
-        
-      },
-      userType: {
-        type: String,
-    
-      },
-      testResult: { 
-        type: String, enum: ['pass', 'fail'], default: null 
-      },
-       attempts: { 
-        type: Number, default: 2 
+      type: Boolean,
+    },
+    userType: {
+      type: String,
+    },
+    testResult: {
+      type: String,
+      default: null,
+    },
+    attempts: {
+      type: Number,
+      default: 2,
     },
     password: {
-        type: String,
+      type: String,
     },
     confirmPassword: {
-        type: String,
-        
+      type: String,
     },
     isEmailVerified: {
-        type: Boolean,
-        default: false,
-      },
-      verificationToken: {
-        type: String,
-        default: null,
-      },
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      default: null,
+    },
     myVideos: {
-        type: [String],
-        default: []
-    }
-},
-    {
-        timestamps: true, // This option adds createdAt and updatedAt fields
-    });
+      type: [String],
+      default: [],
+    },
+  },
+  {
+    timestamps: true, // This option adds createdAt and updatedAt fields
+  }
+);
 
-const UserModel = mongoose.model('Users', UserSchema)
-module.exports = UserModel
+const UserModel = mongoose.model("Users", UserSchema);
+module.exports = UserModel;

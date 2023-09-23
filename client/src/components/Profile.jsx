@@ -28,7 +28,6 @@ export const Profile = (props) => {
       navigate("/editprofile");
     } else if (action === "My Profile") {
       navigate("/creatorProfile", { state: props.auth.user });
-      // alert(JSON.stringify(props.auth.user));
     }
     setAnchorEl(null);
   };

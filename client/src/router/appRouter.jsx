@@ -26,11 +26,10 @@ import { Stack } from "@mui/material";
 
 import Chat from "../components/chat/Chat";
 import PaymentForm from "../components/paymentPage/PaymentForm";
-import { loadStripe } from "@stripe/stripe-js";
-import PaymentPage from "../components/paymentPage/PaymentPage";
 import EditONAdmin from "../components/Admin/EditONAdmin";
 import { Box } from "@mui/system";
-import SkillTest from "../components/skillTest/skillTest";
+import App from "../components/skillTest/SkillTest";
+// import SkillTest from "../components/skillTest/skillTest";
 
 const AppRouter = () => {
   return (
@@ -164,7 +163,7 @@ const AppRouter = () => {
 
         <Route path="/payment" element={<PaymentForm />} />
         <Route path="/editONAdmin" element={<EditONAdmin />} />
-        <Route path="/skilltest/*" element={<SkillTest />} />
+        {/* <Route path="/skilltest/*" element={<App />} /> */}
       </Routes>
       <ToastContainer theme="dark" />
     </BrowserRouter>

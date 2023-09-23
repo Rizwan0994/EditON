@@ -273,7 +273,7 @@ function UpdateProfile() {
             <TextField
               fullWidth
               label="Name"
-              name="firstName"
+              name="name"
               value={formData.name}
               onChange={handleInputChange}
               error={!!formErrors.name}

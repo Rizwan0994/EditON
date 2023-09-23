@@ -1,29 +1,101 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import "./FinishRegistration.css"
-import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import { useEffect } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
+import "./FinishRegistration.css";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import { Grid, MenuItem, TextField } from "@mui/material";
 
 function FinishRegistration() {
   const [isClient, setIsClient] = useState(true);
   const [isCompany, setIsCompany] = useState(false);
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    country: '',
-    email: '',
-    state: '',
-    city: '',
-    language: '',
-    terms_conditions: false,
-    companyName: '',
-    companyRegistrationNumber: '',
-  });
-  const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
 
+  const [formData, setFormData] = useState({
+    country: "",
+    email: "",
+    state: "",
+    city: "",
+    language: "",
+    terms_conditions: false,
+    companyName: "",
+    companyRegistrationNumber: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const storedData = localStorage.getItem("storedEmail");
+  console.log({ ...formData, email: storedData });
+  const navigate = useNavigate();
+  const languages = ["English", "Urdu", "German", "Hindi"];
+  const countries = [
+    {
+      value: "Pakistan",
+      label: "PK",
+      cities: ["Sargodha", "Faislabad", "Lahore", "Islamabad"],
+      state: ["Punjab", "Sindh", "Balochistan"],
+    },
+    {
+      value: "India",
+      label: "IND",
+      cities: ["Sargodha", "Faislabad", "Lahore", "Islamabad"],
+      state: ["Punjab", "Sindh", "Balochistan"],
+    },
+    {
+      value: "United Kingdom",
+      label: "UK",
+      cities: ["Sargodha", "Faislabad", "Lahore", "Islamabad"],
+      state: ["Punjab", "Sindh", "Balochistan"],
+    },
+    {
+      value: "Australia",
+      label: "AUS",
+      cities: ["Sargodha", "Faislabad", "Lahore", "Islamabad"],
+      state: ["Punjab", "Sindh", "Balochistan"],
+    },
+  ];
+
+  const MUITextField = {
+    "& .MuiInputBase-input": {
+      color: "white",
+    },
+    "& .MuiInput-underline:before": {
+      borderBottomColor: "white", // Change the underline border color when not focused
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "white", // Change the underline border color when focused
+    },
+    "& .MuiInputLabel-root": {
+      color: "white", // Change the label color
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "white", // Change the label color when focused
+    },
+    "& .MuiFormLabel-root.Mui-error": {
+      color: "red", // Change the label color when in error state
+    },
+    "& .MuiFormHelperText-root.Mui-error": {
+      color: "red", // Change the helper text color when in error state
+    },
+    "& .MuiInputBase-input::placeholder": {
+      color: "gray", // Change the placeholder text color
+    },
+  };
+
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    country: "",
+    city: "",
+    state: "",
+    language: "",
+  });
+
+  const handleInputFieldsChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setFormErrors({ ...formErrors, [name]: "" }); // Clear the error when user starts typing
+    // alert(JSON.stringify(formData));
+  };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -32,14 +104,18 @@ function FinishRegistration() {
   //.......profile upload
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append('image', image);
-     console.log(formData.get('image'));
+    formData.append("image", image);
+    console.log(formData.get("image"));
     try {
-      await axios.post(`${import.meta.env.VITE_NODE_API}profileUpload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_NODE_API}profileUpload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       // Reset form fields after successful upload
       setImage(null);
       setPreviewImage(null);
@@ -47,101 +123,99 @@ function FinishRegistration() {
       console.error(error);
     }
   };
-  
+
   //................
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    let valid = true;
+    const newFormErrors = { ...formErrors };
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+    // Validation checks
+    // if (!formData.name) {
+    //   valid = false;
+    //   newFormErrors.name = "First Name is required";
+    // }
+
+    if (!formData.country) {
+      valid = false;
+      newFormErrors.country = "Please select your country";
     }
 
-    if (!formData.country.trim()) {
-      newErrors.country = 'Country is required';
+    if (!formData.state) {
+      valid = false;
+      newFormErrors.state = "Please select your state";
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
+    if (!formData.city) {
+      valid = false;
+      newFormErrors.city = "Please select your city";
     }
 
-    if (!formData.state.trim()) {
-      newErrors.state = 'State is required';
+    if (!formData.language) {
+      valid = false;
+      newFormErrors.language = "Please select your language";
     }
 
-    if (!formData.city.trim()) {
-      newErrors.city = 'City is required';
-    }
-
-    if (!formData.language.trim()) {
-      newErrors.language = 'Communication Language is required';
-    }
-
-    if (isCompany && !formData.companyName.trim()) {
-      newErrors.companyName = 'Company Name is required';
-    }
-
-    if (isCompany && !formData.companyRegistrationNumber.trim()) {
-      newErrors.companyRegistrationNumber = 'Company Registration Number is required';
-    }
-
-    if (!formData.terms_conditions) {
-      newErrors.terms_conditions = 'You must agree to the terms and conditions';
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
+    setFormErrors(newFormErrors);
+    return valid;
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
+    if (validateForm()) {
+      try {
+        const formDataToSend = new FormData();
+        formDataToSend.append("image", image);
+        formDataToSend.append("email", storedData);
 
-  if (validateForm()) {
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('image', image);
-
-      // Add other form data fields to the FormData object
-      for (const key in formData) {
-        formDataToSend.append(key, formData[key]);
-      }
+        // Add other form data fields to the FormData object
+        for (const key in formData) {
+          formDataToSend.append(key, formData[key]);
+          console.log(key);
+        }
         // Set the userType based on the selected radio button
-        formDataToSend.append('userType', isClient ? 'client' : isCompany ? 'company' : 'creator');
+        formDataToSend.append(
+          "userType",
+          isClient ? "client" : isCompany ? "company" : "creator"
+        );
+        console.log(
+          `Form Data ${isClient ? "client" : isCompany ? "company" : "creator"}`
+        );
+        // Complete user registration including profile image upload
+        const response = await axios.post(
+          `${import.meta.env.VITE_NODE_API}completeRegistration`,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
+        console.log(response.data);
 
-      // Complete user registration including profile image upload
-      const response = await axios.post(`${import.meta.env.VITE_NODE_API}completeRegistration`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      console.log(response.data);
-      toast.success('Registration completed successfully');
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
-    } catch (error) {
-      console.error(error);
-      toast.error('Registration failed. Please try again.');
+        toast.success("Registration completed successfully");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } catch (error) {
+        console.error(error);
+        toast.error("Registration failed. Please try again.");
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="sign_up">
-            {/* <form encType="multipart/form-data"
+      {/* <form encType="multipart/form-data"
         style={{ position: 'relative', top: '20px', left: '300px' }}>
            {previewImage && (
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -160,21 +234,30 @@ const handleSubmit = async (event) => {
         </button>
        
       </form> */}
-      <div style={{ position: 'relative', top: '20px', left: '300px' }} >
-      {previewImage && (
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <img src={previewImage} alt="Profile Preview" style={{ width: '150px', height: '150px' }} />
-          
+      <div style={{ position: "relative", top: "20px", left: "300px" }}>
+        {previewImage && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src={previewImage}
+              alt="Profile Preview"
+              style={{ width: "150px", height: "150px" }}
+            />
           </div>
         )}
       </div>
-      
+
       <div className="container">
-        
-        <h1 style={{ fontSize: '30px', marginTop: '-50px' }}>Finish Registration</h1>
-        
+        <h1 style={{ fontSize: "30px", marginTop: "-50px" }}>
+          Finish Registration
+        </h1>
+
         <form onSubmit={handleSubmit}>
-          
           <div className="radio-container">
             <div>
               <input
@@ -191,7 +274,9 @@ const handleSubmit = async (event) => {
               />
               <label
                 htmlFor="client"
-                className={`radio-label ${isClient ? 'radio-label-selected' : 'radio-label-unselected'}`}
+                className={`radio-label ${
+                  isClient ? "radio-label-selected" : "radio-label-unselected"
+                }`}
               >
                 As a Client
               </label>
@@ -212,7 +297,11 @@ const handleSubmit = async (event) => {
               />
               <label
                 htmlFor="creator"
-                className={`radio-label ${!isClient && !isCompany ? 'radio-label-selected' : 'radio-label-unselected'}`}
+                className={`radio-label ${
+                  !isClient && !isCompany
+                    ? "radio-label-selected"
+                    : "radio-label-unselected"
+                }`}
               >
                 As a Creator
               </label>
@@ -233,7 +322,9 @@ const handleSubmit = async (event) => {
               />
               <label
                 htmlFor="company"
-                className={`radio-label ${isCompany ? 'radio-label-selected' : 'radio-label-unselected'}`}
+                className={`radio-label ${
+                  isCompany ? "radio-label-selected" : "radio-label-unselected"
+                }`}
               >
                 As a Company
               </label>
@@ -241,7 +332,7 @@ const handleSubmit = async (event) => {
           </div>
 
           <div className="details">
-            <div className="flex items-center border-b-2 py-2 px-1 mb-2">
+            {/* <div className="flex items-center border-b-2 py-2 px-1 mb-2">
               <input
                 type="text"
                 placeholder="Enter Full Name"
@@ -253,8 +344,119 @@ const handleSubmit = async (event) => {
                 required
               />
               {errors.name && <p className="text-red-500">{errors.name}</p>}
-            </div>
+            </div> */}
+
             <div className="flex items-center border-b-2 py-2 px-1 mb-2">
+              <input
+                type="text"
+                placeholder="Enter email that used during registration"
+                className="pl-2 outline-none bg-gray-800 border-none text-white px-5"
+                name="email"
+                id="email"
+                value={storedData}
+                onChange={handleInputChange}
+                required
+                readOnly
+              />
+              {errors.email && <p className="text-red-500">{errors.email}</p>}
+            </div>
+
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency"
+                select
+                label="Select"
+                value={formData.country}
+                helperText={formErrors.country}
+                fullWidth
+                variant="standard"
+                onChange={handleInputFieldsChange}
+                name="country"
+                error={!!formErrors.country}
+                sx={MUITextField}
+              >
+                {countries.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency"
+                select
+                label="Select"
+                helperText={formErrors.state}
+                fullWidth
+                value={formData.state}
+                variant="standard"
+                name="state"
+                onChange={handleInputChange}
+                error={!!formErrors.state}
+                sx={MUITextField}
+              >
+                {countries
+                  .filter((country) => country.value === formData.country)
+                  .map((country) => country.state)
+                  .flat()
+                  .map((state) => (
+                    <MenuItem key={state} value={state}>
+                      {state}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency"
+                select
+                label="Select"
+                value={formData.city}
+                helperText={formErrors.city}
+                fullWidth
+                variant="standard"
+                name="city"
+                onChange={handleInputChange}
+                error={!!formErrors.city}
+                sx={MUITextField}
+              >
+                {countries
+                  .filter((country) => country.value === formData.country)
+                  .map((country) => country.cities)
+                  .flat()
+                  .map((city) => (
+                    <MenuItem key={city} value={city}>
+                      {city}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency"
+                select
+                label="Select"
+                helperText={formErrors.language}
+                fullWidth
+                value={formData.language}
+                variant="standard"
+                name="language"
+                onChange={handleInputChange}
+                error={!!formErrors.language}
+                sx={MUITextField}
+              >
+                {languages.map((lang) => (
+                  <MenuItem key={lang} value={lang}>
+                    {lang}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            {/* <div className="flex items-center border-b-2 py-2 px-1 mb-2">
               <input
                 type="text"
                 placeholder="Enter Country"
@@ -265,62 +467,12 @@ const handleSubmit = async (event) => {
                 onChange={handleInputChange}
                 required
               />
-              {errors.country && <p className="text-red-500">{errors.country}</p>}
-            </div>
-            <div className="flex items-center border-b-2 py-2 px-1 mb-2">
-              <input
-                type="text"
-                placeholder="Enter email that used during registration"
-                className="pl-2 outline-none bg-gray-800 border-none text-white px-5"
-                name="email"
-                id="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-              {errors.email && <p className="text-red-500">{errors.email}</p>}
-            </div>
-            <div className="flex items-center border-b-2 py-2 px-1 mb-2">
-              <input
-                type="text"
-                placeholder="Enter State"
-                className="pl-2 outline-none bg-gray-800 border-none text-white px-5"
-                name="state"
-                id="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                required
-              />
-              {errors.state && <p className="text-red-500">{errors.state}</p>}
-            </div>
-            <div className="flex items-center border-b-2 py-2 px-1 mb-2">
-              <input
-                type="text"
-                placeholder="Enter City"
-                className="pl-2 outline-none bg-gray-800 border-none text-white px-5"
-                name="city"
-                id="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                required
-              />
-              {errors.city && <p className="text-red-500">{errors.city}</p>}
-            </div>
-            <div className="flex items-center border-b-2 py-2 px-1 mb-2">
-              <input
-                type="text"
-                placeholder="Enter Communication Language"
-                className="pl-2 outline-none bg-gray-800 border-none text-white px-5"
-                name="language"
-                id="language"
-                value={formData.language}
-                onChange={handleInputChange}
-                required
-              />
-              {errors.language && <p className="text-red-500">{errors.language}</p>}
-            </div>
+              {errors.country && (
+                <p className="text-red-500">{errors.country}</p>
+              )}
+            </div> */}
           </div>
-          
+
           {isCompany && (
             <>
               <div className="flex items-center border-b-2 py-2 px-1 mb-2">
@@ -334,7 +486,9 @@ const handleSubmit = async (event) => {
                   onChange={handleInputChange}
                   required
                 />
-                {errors.companyName && <p className="text-red-500">{errors.companyName}</p>}
+                {errors.companyName && (
+                  <p className="text-red-500">{errors.companyName}</p>
+                )}
               </div>
               <div className="flex items-center border-b-2 py-2 px-1 mb-2">
                 <input
@@ -347,12 +501,23 @@ const handleSubmit = async (event) => {
                   onChange={handleInputChange}
                   required
                 />
-                {errors.companyRegistrationNumber && <p className="text-red-500">{errors.companyRegistrationNumber}</p>}
+                {errors.companyRegistrationNumber && (
+                  <p className="text-red-500">
+                    {errors.companyRegistrationNumber}
+                  </p>
+                )}
               </div>
             </>
           )}
-            <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} /> 
-            <br/>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ marginTop: "10px" }}
+          />
+          <br />
 
           <div className="check">
             <input
@@ -363,12 +528,14 @@ const handleSubmit = async (event) => {
               onChange={handleInputChange}
             />
             <label htmlFor="terms_conditions">
-              I agree to the <a href='/'>terms</a> and <a href='/'>conditions</a>
+              I agree to the <a href="/">terms</a> and{" "}
+              <a href="/">conditions</a>
             </label>
-            {errors.terms_conditions && <p className="text-red-500">{errors.terms_conditions}</p>}
+            {errors.terms_conditions && (
+              <p className="text-red-500">{errors.terms_conditions}</p>
+            )}
           </div>
-          
-        
+
           <button
             id="register_btn"
             type="submit"
@@ -377,7 +544,6 @@ const handleSubmit = async (event) => {
             Sign Up
           </button>
         </form>
-       
 
         <ToastContainer />
       </div>
@@ -386,4 +552,3 @@ const handleSubmit = async (event) => {
 }
 
 export default FinishRegistration;
-

@@ -41,8 +41,8 @@ function PaymentForm() {
 
   const handleAddOrder = () => {
     const order = {
-      creatorName: creatorName, // Rename the field to productName
-      email: creatorEmail,
+      creatorName: creatorPaymentData.name, // Rename the field to productName
+      email: creatorPaymentData.email,
       price: creatorPrice, // Use creatorPrice instead of productPriceFromUrl
     };
 
@@ -112,7 +112,7 @@ function PaymentForm() {
             type="text"
             id="creatorName"
             value={creatorPaymentData.name}
-            // onChange={(e) => setCreatorName(e.target.value)}
+            onChange={() => setCreatorName(creatorPaymentData.name)}
             readOnly
           />
         </div>
@@ -123,7 +123,10 @@ function PaymentForm() {
             type="email"
             id="creatorEmail"
             value={creatorPaymentData.email}
-            // onChange={(e) => setCreatorEmail(e.target.value)}
+            onChange={() => {
+              alert("xyz");
+              setCreatorEmail(creatorPaymentData.email);
+            }}
             readOnly
           />
         </div>
